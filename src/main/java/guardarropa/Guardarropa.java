@@ -18,7 +18,7 @@ public class Guardarropa {
   }
 
   public void sugerirAtuendo() {
-    GeneradorDeAtuendo.getInstance().crearAtuendo(obtenerPrendasSegunClima());
+    sugerencias.add(GeneradorDeAtuendo.getInstance().crearAtuendo(obtenerPrendasSegunClima()));
   }
 
   public List<Prenda> obtenerPrendasSegunClima() {
@@ -35,10 +35,6 @@ public class Guardarropa {
 
   public void quitarPrenda(Prenda prenda) {
     this.prendas.remove(prenda);
-  }
-
-  public void agregarSugerencia(Atuendo atuendo) {
-    sugerencias.add(atuendo);
   }
 
 }
