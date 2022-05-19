@@ -8,6 +8,7 @@ public class BorradorDePrenda {
   private Color colorPrincipal;
   private Color colorSecundario;
   private Trama trama;
+  private double temperaturaMaxima;
 
   public void setTipoPrenda(TipoPrenda tipoPrenda) {
     this.tipoPrenda = requireNonNull(tipoPrenda, "tipo de prenda es obligatorio");
@@ -33,7 +34,11 @@ public class BorradorDePrenda {
     }
   }
 
+  public void setTemperaturaMaxima(double temperaturaMaxima) {
+    this.temperaturaMaxima = temperaturaMaxima;
+  }
+
   public Prenda crearPrenda() {
-    return new Prenda(tipoPrenda,material,colorPrincipal,colorSecundario,trama);
+    return new Prenda(tipoPrenda,material,colorPrincipal,colorSecundario,trama, temperaturaMaxima);
   }
 }
