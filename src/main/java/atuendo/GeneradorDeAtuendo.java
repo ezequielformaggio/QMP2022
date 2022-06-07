@@ -2,7 +2,6 @@ package atuendo;
 
 import Prenda.Categoria;
 import Prenda.Prenda;
-
 import java.util.List;
 import java.util.Random;
 import java.util.stream.Collectors;
