@@ -16,6 +16,7 @@ public class Guardarropa {
   private List<Sugerencia> sugerenciasDePrenda = new ArrayList<>();
   private List<Sugerencia> sugerenciasDePrendaAceptadas = new ArrayList<>();
   private List<Persona> personas = new ArrayList<>();
+  private Atuendo sugerenciaDiaria;
   private Persona personaACargo;
 
   public Guardarropa(List<Prenda> prendas, Persona persona, List<Persona> personas) {
@@ -24,6 +25,10 @@ public class Guardarropa {
     this.personas = personas;
     personas.forEach(_persona -> _persona.agregarGuardarropa(this));
     this.prendas = prendas;
+  }
+
+  public void generarSugerenciaDiaria() {
+    sugerenciaDiaria = GeneradorDeAtuendo.getInstance().crearAtuendo(obtenerPrendasSegunClima());
   }
 
   public void sugerirAtuendo() {

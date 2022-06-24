@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 
 public final class AccuWeatherApi extends ServicioMeteorologico {
+
   public final List<Map<String, Object>> getWeather(String ciudad) {
     return Arrays.asList(new HashMap<String, Object>(){{
       put("DateTime", "2019-05-03T01:00:00-03:00");
@@ -23,4 +24,9 @@ public final class AccuWeatherApi extends ServicioMeteorologico {
       }});
     }});
   }
+
+  public Map<String, Object> getAlertas(String city) {
+    return new HashMap<String, Object>();
+  }
+
 }

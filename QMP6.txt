@@ -1,0 +1,159 @@
+/*
+Como usuarie de QueMePongo quiero tener una sugerencia diaria de qué ponerme y que  
+todas las mañanas, diariamente, esta sea actualizada 
+*/
+
+class guardarropa {
+
+	  private Atuendo sugerenciaDiaria;
+
+	  // metodo que se llama diariamente segun un servicio con cronologia, que se ejecuta desde un main
+	  public void generarSugerenciaDiaria() {
+    sugerenciaDiaria = GeneradorDeAtuendo.getInstance().crearAtuendo(obtenerPrendasSegunClima());
+  }
+}
+
+class main {
+	public void ejecutarMetodoDiario(servicioCronologico) {
+		
+	}
+}
+
+/*
+Como empleade de QueMePongo quiero poder disparar el cálculo de sugerencias diarias 
+para todos los usuarios para poder ejecutar esta acción a principio de cada día.
+*/
+
+// para poder hacer esto, se podria contar con un repositorio de guardarropas que contenga el siguiente metodo:
+// cada vez que se instancie un guardarropas deberia guardarse en el repo
+// si bien se habla de sugerencia diaria al usuario, las sugerencias se hacen en los guardarropas, ademas de que
+// muchos usuarios comparten guardarropas, por lo cual, si el metodo se hiciera en el usuario, seria un
+// pasamanos para llamar al metodo de sugerencias de atuendos de cada guardarropas, ademas de que tendria la
+// complejidad de que habria que distinguir los guardarropas ya que varios usuarios los comparten y el metodo 
+// podria llamarse una vez por cada usuario
+
+class RepoGuardarropas {
+
+	private List<Guardarropa> guardarropas = new ArrayList<>;
+
+	public void actualizarSugerenciasDiarias() {
+		guardarropas.forEach(guardarropa -> guardarropa.generarSugerenciaDiaria());
+
+	}
+}
+
+/*
+Como usuarie de QueMePongo, quiero poder conocer cuáles son las últimas alertas 
+meteorológicas publicadas en el sistema para estar informado (pudiendo verlas, por ejemplo, al entrar en quemepongo.com)
+*/
+
+public class ServicioMeteorologico {
+
+  AccuWeatherApi apiClima = new AccuWeatherApi();
+  List<List<String>> ultimasAlertas = new ArrayList<>;
+
+
+  public List<String> getAlerta(String ciudad) {
+  	Map<String, Object> alertas = apiClima.getAlerts(ciudad);
+  	List<String> alertasActuales = (List<String>) alertas.get("CurrentAlerts");
+  	actualizarUltimasAlertas(alertasActuales);
+  	actualizarSugerenciasDiarias();
+  	return alertasActuales;
+  }
+
+  // suponiendo que se muestran las ultimas 10
+  public void actualizarUltimasAlertas(List<String> alerta) {
+  	ultimasAlertas.add(alerta);
+  	if(ultimasAlertas.count() > 10) { 
+  	ultimasAlertas.remove(0);
+  	}
+  }
+
+  public void actualizarSugerenciasDiarias() {
+  	RepoGuardarropas.getInstance().actualizarSugerenciasDiarias();
+  }
+
+}
+
+/*
+Como empleade de QueMePongo, necesito poder disparar un proceso que consulte y 
+actualice la lista de alertas publicadas en el sistema para tener control sobre cuándo se publican las mismas 
+*/
+
+ServicioMeteorologico.getInstance().getUltimasAlertas();
+ServicioMeteorologico.getInstance().getAlerta();
+
+/*
+Como usuarie de QuéMePongo quiero que se actualice mi sugerencia diaria con las condiciones climáticas 
+actualizadas cuando se genere algún alerta durante el día 
+*/
+
+// contemplado en el metodo getAlertas() de servicio meteorologico
+  public void actualizarSugerenciasDiarias() {
+  	RepoGuardarropas.getInstance().actualizarSugerenciasDiarias();
+  }
+
+/*
+Como usuarie de QuéMePongo quiero poder configurar cuáles de estas acciones (notificaciones, mail, recálculo) 
+quiero que se ejecuten y cuáles no, además de soportar nuevas acciones a futuro. 
+(No nos interesará, sin embargo, soportar nuevas alertas)
+*/
+
+public class ServicioMeteorologico {
+
+  AccuWeatherApi apiClima = new AccuWeatherApi();
+  private List<ClimaObservers> observers = new ArrayList<>; // va por constructor, ademas podria tener setters y remove
+
+
+  public List<String> getAlerta(String ciudad) {
+  	Map<String, Object> alertas = apiClima.getAlerts(ciudad);
+  	List<String> alerta = (List<String>) alertas.get("CurrentAlerts");
+  	nuevaAlertaRecibida();
+  	return alerta;
+  }
+
+  public void nuevaAlertaRecibida(List<String> alerta) {
+  	observers.forEach(observer -> observer.alertaRecibida(alerta));
+  }
+
+}
+
+public interface ClimaObservers {
+	public alertaRecibida(alerta);
+}
+
+/*
+Como usuarie de QueMePongo quiero tener la posibilidad de que ante una alerta de tormenta la app me notifique que 
+debo llevarme también un paraguas 
+*/
+
+public class TormentaObserver implements ClimaObservers {
+	public alertaRecibida(alerta) {
+			if(alerta.findAny(alerta == "Tormenta")){
+				servicioDeNotificacion.getInstance().notify("llevar paraguas");
+			}
+	}
+
+/*
+Como usuarie de QueMePongo quiero que ante una alerta meteorológica de granizo la app  me notifique que evite salir en auto
+*/
+
+public class GranizoObserver implements ClimaObservers {
+	public alertaRecibida(alerta) {
+			if(alerta.findAny(alerta == "Granizo")){
+				servicioDeNotificacion.getInstance().notify("evite salir en auto");
+			}
+	}
+}
+
+/*
+Como usuarie de QueMePongo quiero poder recibir un mail avisándome si se generó algún alerta meteorológico y cuál
+*/
+
+public class MailObserver implements ClimaObservers {
+	public alertaRecibida(alerta) {
+			servicioMail.notificar() 
+			// el servicio de mails deberia conocer a los usuarios interesados en recibir un mail
+			// esto deberia estar en nuestra interfaz para recibir el mail de alguna forma
+	}
+}

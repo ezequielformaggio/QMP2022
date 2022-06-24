@@ -11,5 +11,4 @@ public class Persona {
   public void agregarGuardarropa(Guardarropa guardarropa) {
     guardarropas.add(guardarropa);
   }
-
 }

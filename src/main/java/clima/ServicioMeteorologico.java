@@ -26,4 +26,10 @@ public class ServicioMeteorologico {
     return (temperaturaFarenheit - 32) * 5 / 9;
   }
 
+  public List<String> getAlerta(String ciudad) {
+    Map<String, Object> alertas = apiClima.getAlertas(ciudad);
+    return (List<String>) alertas.get("CurrentAlerts");
+  }
+
+
 }
